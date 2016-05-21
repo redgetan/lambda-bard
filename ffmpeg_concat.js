@@ -2,7 +2,7 @@
 var exec = require('child_process').exec;
 
 exports.handler = (event, context, callback) => {
-  return callback("hello world");
+  return callback(null,"hello world");
 
   if (!event.cmd) {
       return callback('Please specify a command to run as event.cmd');
