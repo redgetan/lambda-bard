@@ -168,8 +168,6 @@ exports.handler = (event, context, callback) => {
   console.log("here before filter promise");
   funcStartTime = new Date();
 
-  return callback(null, funcStartTime);
-
   buildFilterPromise(bundle_token, video_token).then(function(videos) {
     var video_ids = videos.map(function(video){ return video.id; }).join(",");
     console.log("here: " + video_ids);
@@ -178,7 +176,7 @@ exports.handler = (event, context, callback) => {
     funcEndTime = new Date();
     console.log("sql query took: " + (funcEndTime - funcStartTime));
     var segmentUrls = segments.map(function(segment){ return segment.sourceUrl(); });
-    // return callback(null, segmentUrls);
+    return callback(null, segmentUrls);
     // return concatSegments(segmentUrls, event, context, callback);
   }).catch(function(error) {
     return callback(error);
