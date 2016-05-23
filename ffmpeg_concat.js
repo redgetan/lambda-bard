@@ -153,7 +153,7 @@ function concatSegments(segment_urls, event, context, callback) {
 
 
 exports.handler = (event, context, callback) => {
-  callback = callback || context.done; // lambda local uses the 0.10 nodejs api where it uses context.done instead of callback to return result to user
+  // callback = callback || context.done; // lambda local uses the 0.10 nodejs api where it uses context.done instead of callback to return result to user
 
   var bundle_token = event.queryParams.bundle_token;
   var video_token  = event.queryParams.video_token;
