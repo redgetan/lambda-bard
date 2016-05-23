@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "aws-sdk": "2.3.14"
+    "aws-sdk": "2.3.14",
+    "mysql": "2.10.2",
+    "sequelize": "3.20.0"
   }
 }
