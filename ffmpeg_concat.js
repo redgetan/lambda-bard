@@ -143,6 +143,7 @@ function concatSegments(segment_urls, event, context, callback) {
 
         s3.upload(params, function (err, data) {
           funcEndTime = new Date();
+          console.log(callback);
           console.log("s3 upload took: " + (funcEndTime - funcStartTime));
           return callback(null,data.Location);
         });
