@@ -176,7 +176,8 @@ exports.handler = (event, context, callback) => {
     funcEndTime = new Date();
     console.log("sql query took: " + (funcEndTime - funcStartTime));
     var segmentUrls = segments.map(function(segment){ return segment.sourceUrl(); });
-    return concatSegments(segmentUrls, event, context, callback);
+    return callback(null, segmentUrls);
+    // return concatSegments(segmentUrls, event, context, callback);
   }).catch(function(error) {
     return callback(error);
   });
