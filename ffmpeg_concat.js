@@ -63,7 +63,7 @@ function isBlank(str) {
     return (!str || /^\s*$/.test(str));
 }
 
-function concatSegments(segment_urls, event, context, callback) {
+function concatSegments(segment_urls, event, context) {
   var username = "demo_user";
   var key = Date.now();
   var namespace = username + "/" + key;
@@ -110,11 +110,11 @@ function concatSegments(segment_urls, event, context, callback) {
       console.log("fetchSegments took: " + (funcEndTime - funcStartTime));
 
       if (error) {
-        callback(error);
+        context.done(error);
       } 
 
       if (concatCmd === "") {
-        return callback(null,stdout);
+        return context.done(null,stdout);
       }
 
       funcStartTime = new Date();
@@ -125,7 +125,7 @@ function concatSegments(segment_urls, event, context, callback) {
 
         console.log("concat took: " + (funcEndTime - funcStartTime));
         if (error) {
-          callback(error);
+          context.done(error);
         } 
 
         funcStartTime = new Date();
@@ -143,9 +143,8 @@ function concatSegments(segment_urls, event, context, callback) {
 
         s3.upload(params, function (err, data) {
           funcEndTime = new Date();
-          console.log(callback);
           console.log("s3 upload took: " + (funcEndTime - funcStartTime));
-          return callback(null,data.Location);
+          return context.done(null,data.Location);
         });
       });
   });
@@ -162,7 +161,7 @@ exports.handler = (event, context, callback) => {
   var filterPromise;
 
   if (isBlank(text)) {
-    return callback("text can't be blank");
+    return context.done("text can't be blank");
   }
 
   console.log("here before filter promise");
@@ -176,10 +175,9 @@ exports.handler = (event, context, callback) => {
     funcEndTime = new Date();
     console.log("sql query took: " + (funcEndTime - funcStartTime));
     var segmentUrls = segments.map(function(segment){ return segment.sourceUrl(); });
-    return context.done(null, segmentUrls);
-    // return concatSegments(segmentUrls, event, context, callback);
+    return concatSegments(segmentUrls, event, context);
   }).catch(function(error) {
-    return callback(error);
+    return context.done(error);
   });
 
 };
