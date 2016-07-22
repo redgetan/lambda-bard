@@ -16,7 +16,7 @@ process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'
 // "curl -o /tmp/lol.mp4 -s url"
 
 function buildVideoConcatCommand(segment_urls, outputFile) {
-  var binary = "./bin/ffmpeg"
+  var binary = process.env['FFMPEG_PATH'] || "./bin/ffmpeg"
   var inputs = segment_urls.map(function(segment_url){ return " -i " + segment_url;  }).join(" ");
   var concatFilterPre  = " -filter_complex '";
   var concatFilterMid  = segment_urls.map(function(segment_url, index){ return " [" + index + ":v] " + "[" + index + ":a] "; }).join("");
