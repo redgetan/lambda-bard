@@ -66,7 +66,7 @@ function isBlank(str) {
 function concatSegments(segment_urls, event, context) {
   var username = "demo_user";
   var key = Date.now();
-  var namespace = username + "/" + key;
+  var namespace = "repositories/" + username;
   var downloadedSegmentsDir = "/tmp/" + namespace;
   var localList = segment_urls.map(function(url){ return downloadedSegmentsDir + "/" + url.split("/").slice(-1)[0]; });
 
@@ -135,7 +135,7 @@ function concatSegments(segment_urls, event, context) {
         var body     = fs.createReadStream(outputFileAbsolutePath);
         var params = {
           Bucket: 'roplabs-mad', 
-          Key: outputFile, 
+          Key: namespace + "/" + outputFile, 
           ACL: "public-read", 
           ContentType: "video/mp4",
           Body: body
@@ -144,7 +144,8 @@ function concatSegments(segment_urls, event, context) {
         s3.upload(params, function (err, data) {
           funcEndTime = new Date();
           console.log("s3 upload took: " + (funcEndTime - funcStartTime));
-          return context.done(null,data.Location);
+          var repoSourceUrl = Segment.cdnPath() + namespace + "/" + outputFile;
+          return context.done(null, repoSourceUrl);
         });
       });
   });

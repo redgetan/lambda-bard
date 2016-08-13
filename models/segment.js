@@ -20,6 +20,9 @@ module.exports = function(sequelize, DataTypes) {
     tableName: "segments",
     underscored: true,
     classMethods: {
+      cdnPath: function() {
+        return "https://d22z4oll34c07f.cloudfront.net/";
+      },
       associate: function(models) {
         Segment.belongsTo(models.Video);
       },
@@ -38,17 +41,14 @@ module.exports = function(sequelize, DataTypes) {
         var urls = wordTags.map(function(wordTagString){
           var wordTagComponents = wordTagString.split(":");
           var wordTagToken      = wordTagComponents[1];
-          return "https://d22z4oll34c07f.cloudfront.net/segments/" + video_token + "/" + wordTagToken + ".mp4";
+          return Segment.cdnPath() + "segments/" + video_token + "/" + wordTagToken + ".mp4";
         });
 
         return urls;
       }
     }, instanceMethods: {
-      cdnPath: function() {
-        return "https://d22z4oll34c07f.cloudfront.net/";
-      },
       sourceUrl: function() {
-        return this.cdnPath() + this.getRelativePath();
+        return Segment.cdnPath() + this.getRelativePath();
       },
       getRelativePath: function() {
         return "segments/" + this.video.token + "/" + this.token + ".mp4";
