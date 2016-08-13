@@ -4,6 +4,7 @@ var fs = require('fs');
 var AWS = require('aws-sdk');
 var models = require('./models/index');
 var util = require('./utils/helpers');
+var uuid = require('node-uuid');
 var funcStartTime;
 var funcEndTime;
 
@@ -65,40 +66,13 @@ function isBlank(str) {
 
 function concatSegments(segment_urls, event, context) {
   var username = "demo_user";
-  var key = Date.now();
   var namespace = "repositories/" + username;
   var downloadedSegmentsDir = "/tmp/" + namespace;
   var localList = segment_urls.map(function(url){ return downloadedSegmentsDir + "/" + url.split("/").slice(-1)[0]; });
 
-  var outputFile = key + ".mp4";
+  var outputFile = uuid.v4() + ".mp4";
   var outputFileAbsolutePath = "/tmp/" + namespace + "/" + outputFile;
   
-  // var list = [
-  //   "https://roplabs-mad.s3-us-west-2.amazonaws.com/segments/n1IJt22JFY4/this_453_100.mp4",
-  //   "https://roplabs-mad.s3-us-west-2.amazonaws.com/segments/n1IJt22JFY4/is_468_96.mp4",
-  //   "https://roplabs-mad.s3-us-west-2.amazonaws.com/segments/n1IJt22JFY4/a_480_42.mp4",
-  //   "https://roplabs-mad.s3-us-west-2.amazonaws.com/segments/n1IJt22JFY4/huge_488_95.mp4",
-  //   "https://roplabs-mad.s3-us-west-2.amazonaws.com/segments/n1IJt22JFY4/movie_526_100.mp4",
-  //   "https://roplabs-mad.s3-us-west-2.amazonaws.com/segments/n1IJt22JFY4/its_552_68.mp4",
-  //   "https://roplabs-mad.s3-us-west-2.amazonaws.com/segments/n1IJt22JFY4/going_565_100.mp4",
-  //   "https://roplabs-mad.s3-us-west-2.amazonaws.com/segments/n1IJt22JFY4/to_578_100.mp4",
-  //   "https://roplabs-mad.s3-us-west-2.amazonaws.com/segments/n1IJt22JFY4/be_584_100.mp4",
-  //   "https://roplabs-mad.s3-us-west-2.amazonaws.com/segments/n1IJt22JFY4/coming_591_100.mp4"
-  // ];
-
-  // var localList = [
-  //   "/tmp/this_453_100.mp4",
-  //   "/tmp/is_468_96.mp4",
-  //   "/tmp/a_480_42.mp4",
-  //   "/tmp/huge_488_95.mp4",
-  //   "/tmp/movie_526_100.mp4",
-  //   "/tmp/its_552_68.mp4",
-  //   "/tmp/going_565_100.mp4",
-  //   "/tmp/to_578_100.mp4",
-  //   "/tmp/be_584_100.mp4",
-  //   "/tmp/coming_591_100.mp4"
-  // ];
-
   var cmd = (typeof(event.queryParams) !== "undefined" && typeof(event.queryParams.cmd) !== "undefined" && event.queryParams.cmd.length > 0)  ? event.queryParams.cmd : "mkdir -p " + downloadedSegmentsDir + " && cd " + downloadedSegmentsDir + " && printf '" + segment_urls.join("\n") + "' | xargs -n 1 -P 8 curl -s -O";
   var concatCmd = (typeof(event.queryParams) !== "undefined" && typeof(event.queryParams.cmd) !== "undefined" && event.queryParams.cmd.length > 0) ? "" : buildVideoConcatCommand(localList, outputFileAbsolutePath);
 
