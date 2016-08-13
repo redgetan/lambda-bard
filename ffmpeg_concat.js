@@ -39,13 +39,13 @@ function buildFilterPromise(bundle_token, video_token){
       where: ["token = ?", bundle_token]  
     }).then(function(bundle){
       return models.Video.findAll({ 
-        attributes: ['id'],
+        attributes: ['id','token'],
         where: ["bundle_id = ?", bundle.id]
       });
     });
   } else if (video_token) {
     filterPromise = models.Video.findAll({ 
-        attributes: ['id'],
+        attributes: ['id','token'],
         where: {
           token: {
             $in: video_token.split(",")
@@ -170,13 +170,25 @@ exports.handler = (event, context, callback) => {
   buildFilterPromise(bundle_token, video_token).then(function(videos) {
     var video_ids = videos.map(function(video){ return video.id; }).join(",");
     console.log("here: " + video_ids);
-    return models.Segment.fromText(text, video_ids);
-  }).then(function(segments){
-    funcEndTime = new Date();
-    console.log("sql query took: " + (funcEndTime - funcStartTime));
-    var segmentUrls = segments.map(function(segment){ return segment.sourceUrl(); });
+
+    var isWordTagGiven = text.indexOf(":") != -1;
+    if (isWordTagGiven) {
+      return Promise.resolve(models.Segment.urlsFromWordTags(text, video_token));
+    } else {
+      return models.Segment.fromText(text, video_ids).then(function(segments) {
+        funcEndTime = new Date();
+        console.log("sql query took: " + (funcEndTime - funcStartTime));
+        var segmentUrls = segments.map(function(segment){ return segment.sourceUrl(); });
+        return Promise.resolve(segmentUrls);
+      });
+    }
+  }).then(function(segmentUrls){
+    console.log("merging these segments:");
+    console.log(segmentUrls);
+    // return context.done(null,"asdf");
     return concatSegments(segmentUrls, event, context);
   }).catch(function(error) {
+    console.log(error.stack);
     return context.done(error);
   });
 

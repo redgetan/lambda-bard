@@ -11,6 +11,7 @@ module.exports = function(sequelize, DataTypes) {
     video_id: DataTypes.INTEGER,
     word: DataTypes.STRING,
     relative_path: DataTypes.STRING,
+    token: DataTypes.STRING,
     start: DataTypes.DECIMAL,
     stop: DataTypes.DECIMAL,
     duration: DataTypes.DECIMAL,
@@ -30,13 +31,27 @@ module.exports = function(sequelize, DataTypes) {
         }).join(" UNION "); 
 
         return sequelize.query(sqlStatement, { model: Segment });
+      },
+      urlsFromWordTags: function(text, video_token) { 
+        var wordTags = normalize(text).split(" ");
+
+        var urls = wordTags.map(function(wordTagString){
+          var wordTagComponents = wordTagString.split(":");
+          var wordTagToken      = wordTagComponents[1];
+          return "https://d22z4oll34c07f.cloudfront.net/segments/" + video_token + "/" + wordTagToken + ".mp4";
+        });
+
+        return urls;
       }
     }, instanceMethods: {
       cdnPath: function() {
-        return "http://d22z4oll34c07f.cloudfront.net/";
+        return "https://d22z4oll34c07f.cloudfront.net/";
       },
       sourceUrl: function() {
-        return this.cdnPath() + this.relative_path;
+        return this.cdnPath() + this.getRelativePath();
+      },
+      getRelativePath: function() {
+        return "segments/" + this.video.token + "/" + this.token + ".mp4";
       },
       serialize: function() { 
         return { 
@@ -48,7 +63,7 @@ module.exports = function(sequelize, DataTypes) {
   });
 
   function normalize(text) {
-    return util.replaceAll(text,"[^\\w]"," ").toLowerCase();
+    return util.replaceAll(text,"[^\\w|:]"," ").toLowerCase();
   }  
 
   function buildWordSelect(word, filter_ids) {
