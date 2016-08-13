@@ -36,7 +36,7 @@ module.exports = function(sequelize, DataTypes) {
         return sequelize.query(sqlStatement, { model: Segment });
       },
       urlsFromWordTags: function(text, scene_token) { 
-        var wordTags = normalize(text).split(" ");
+        var wordTags = text.split(" ");
 
         var urls = wordTags.map(function(wordTagString){
           var wordTagComponents = wordTagString.split(":");
