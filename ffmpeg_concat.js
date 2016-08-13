@@ -65,8 +65,7 @@ function isBlank(str) {
 }
 
 function concatSegments(segment_urls, event, context) {
-  var username = "demo_user";
-  var namespace = "repositories/" + username;
+  var namespace = "repositories";
   var downloadedSegmentsDir = "/tmp/" + namespace;
   var localList = segment_urls.map(function(url){ return downloadedSegmentsDir + "/" + url.split("/").slice(-1)[0]; });
 
@@ -118,7 +117,7 @@ function concatSegments(segment_urls, event, context) {
         s3.upload(params, function (err, data) {
           funcEndTime = new Date();
           console.log("s3 upload took: " + (funcEndTime - funcStartTime));
-          var repoSourceUrl = Segment.cdnPath() + namespace + "/" + outputFile;
+          var repoSourceUrl = models.Segment.cdnPath() + namespace + "/" + outputFile;
           return context.done(null, repoSourceUrl);
         });
       });
