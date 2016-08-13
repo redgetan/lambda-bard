@@ -31,25 +31,25 @@ function getAlphaNumeric(text) {
   return text.replace(/[^\w]+/g,"");
 }
 
-function buildFilterPromise(bundle_token, video_token){
+function buildFilterPromise(character_token, scene_token){
   var filterPromise;
 
-  if (bundle_token) {
-    filterPromise = models.Bundle.findOne({
+  if (character_token) {
+    filterPromise = models.Character.findOne({
       attributes: ['id'],
-      where: ["token = ?", bundle_token]  
-    }).then(function(bundle){
+      where: ["token = ?", character_token]  
+    }).then(function(character){
       return models.Video.findAll({ 
         attributes: ['id','token'],
-        where: ["bundle_id = ?", bundle.id]
+        where: ["character_id = ?", character.id]
       });
     });
-  } else if (video_token) {
+  } else if (scene_token) {
     filterPromise = models.Video.findAll({ 
         attributes: ['id','token'],
         where: {
           token: {
-            $in: video_token.split(",")
+            $in: scene_token.split(",")
           }
         }
     });
@@ -129,8 +129,8 @@ function concatSegments(segment_urls, event, context) {
 exports.handler = (event, context, callback) => {
   // callback = callback || context.done; // lambda local uses the 0.10 nodejs api where it uses context.done instead of callback to return result to user
 
-  var bundle_token = event.queryParams.bundle_token;
-  var video_token  = event.queryParams.video_token;
+  var character_token = event.queryParams.character_token;
+  var scene_token  = event.queryParams.scene_token;
   var text         = event.queryParams.text;
   var filterPromise;
 
@@ -141,13 +141,13 @@ exports.handler = (event, context, callback) => {
   console.log("here before filter promise");
   funcStartTime = new Date();
 
-  buildFilterPromise(bundle_token, video_token).then(function(videos) {
+  buildFilterPromise(character_token, scene_token).then(function(videos) {
     var video_ids = videos.map(function(video){ return video.id; }).join(",");
     console.log("here: " + video_ids);
 
     var isWordTagGiven = text.indexOf(":") != -1;
     if (isWordTagGiven) {
-      return Promise.resolve(models.Segment.urlsFromWordTags(text, video_token));
+      return Promise.resolve(models.Segment.urlsFromWordTags(text, scene_token));
     } else {
       return models.Segment.fromText(text, video_ids).then(function(segments) {
         funcEndTime = new Date();

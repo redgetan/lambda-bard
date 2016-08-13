@@ -35,13 +35,13 @@ module.exports = function(sequelize, DataTypes) {
 
         return sequelize.query(sqlStatement, { model: Segment });
       },
-      urlsFromWordTags: function(text, video_token) { 
+      urlsFromWordTags: function(text, scene_token) { 
         var wordTags = normalize(text).split(" ");
 
         var urls = wordTags.map(function(wordTagString){
           var wordTagComponents = wordTagString.split(":");
           var wordTagToken      = wordTagComponents[1];
-          return Segment.cdnPath() + "segments/" + video_token + "/" + wordTagToken + ".mp4";
+          return Segment.cdnPath() + "segments/" + scene_token + "/" + wordTagToken + ".mp4";
         });
 
         return urls;
