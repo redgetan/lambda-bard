@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
         Segment.belongsTo(models.Video);
       },
       fromText: function(text, filter_ids) { 
-        var words = normalize(text).split(" ");
+        var words = normalize(text).split(/\s+/);
 
         var sqlStatement = words.map(function(word){
           return buildWordSelect(word, filter_ids)
@@ -37,7 +37,7 @@ module.exports = function(sequelize, DataTypes) {
         return sequelize.query(sqlStatement, { model: Segment });
       },
       urlsFromWordTags: function(text, scene_token) { 
-        var wordTags = text.trim().split(" ");
+        var wordTags = text.trim().split(/\s+/);
 
         var urls = wordTags.map(function(wordTagString){
           var wordTagComponents = wordTagString.split(":");
