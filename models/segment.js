@@ -17,6 +17,7 @@ module.exports = function(sequelize, DataTypes) {
     duration: DataTypes.DECIMAL,
     confidence: DataTypes.DECIMAL,
   }, {
+    timestamps: false,
     tableName: "segments",
     underscored: true,
     classMethods: {
@@ -48,16 +49,24 @@ module.exports = function(sequelize, DataTypes) {
       }
     }, instanceMethods: {
       sourceUrl: function() {
-        return Segment.cdnPath() + this.getRelativePath();
+        return this.getRelativePath().then(function(relativePath){
+          return Segment.cdnPath() + relativePath;
+        });
       },
       getRelativePath: function() {
-        return "segments/" + this.video.token + "/" + this.token + ".mp4";
+        var segmentToken = this.token;
+
+        return this.getVideo().then(function(video){
+          return "segments/" + video.token + "/" + segmentToken + ".mp4";
+        });
       },
       serialize: function() { 
-        return { 
-          word: this.word,
-          source_url: this.sourceUrl()
-        };
+        return this.sourceUrl().then(function(sourceUrl){
+          return { 
+            word: this.word,
+            source_url: sourceUrl
+          };
+        });
       }
     }
   });

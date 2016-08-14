@@ -153,7 +153,7 @@ exports.handler = (event, context, callback) => {
         funcEndTime = new Date();
         console.log("sql query took: " + (funcEndTime - funcStartTime));
         var segmentUrls = segments.map(function(segment){ return segment.sourceUrl(); });
-        return Promise.resolve(segmentUrls);
+        return Promise.all(segmentUrls);
       });
     }
   }).then(function(segmentUrls){
