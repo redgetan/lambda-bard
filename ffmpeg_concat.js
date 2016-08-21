@@ -83,7 +83,8 @@ function concatSegments(segment_urls, event, context) {
       console.log("fetchSegments took: " + (funcEndTime - funcStartTime));
 
       if (error) {
-        context.done(error);
+        console.log(error.stack);
+        context.done("Error fetching segments");
       } 
 
       if (concatCmd === "") {
@@ -98,7 +99,8 @@ function concatSegments(segment_urls, event, context) {
 
         console.log("concat took: " + (funcEndTime - funcStartTime));
         if (error) {
-          context.done(error);
+          console.log(error.stack);
+          context.done("Concat Error");
         } 
 
         funcStartTime = new Date();
@@ -163,7 +165,7 @@ exports.handler = (event, context, callback) => {
     return concatSegments(segmentUrls, event, context);
   }).catch(function(error) {
     console.log(error.stack);
-    return context.done(error);
+    return context.done("Error");
   });
 
 };
