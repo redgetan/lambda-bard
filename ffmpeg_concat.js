@@ -2,15 +2,17 @@
 var exec = require('child_process').exec;
 var fs = require('fs');
 var AWS = require('aws-sdk');
-var raven = require('raven');
 var models = require('./models/index');
 var util = require('./utils/helpers');
 var uuid = require('node-uuid');
 var funcStartTime;
 var funcEndTime;
 
-var sentry = new raven.Client('https://eeeab140f7794810a29e5b139871bc8d:65a80e26bacd4af6a56fdec3408fe21e@sentry.io/96679');
-sentry.patchGlobal();
+var rollbar = require("rollbar");
+rollbar.init("608fbaf6aa554c6aa6044b0d20efe646");
+rollbar.handleUncaughtExceptionsAndRejections("608fbaf6aa554c6aa6044b0d20efe646", {});
+
+rollbar.reportMessage("Hello world!");
 
 
 AWS.config.region = 'us-west-2';
@@ -82,14 +84,14 @@ function concatSegments(segment_urls, event, context) {
 
   funcStartTime = new Date();
 
-  // console.log("cmd is " + event.query.cmd);
+  console.log("cmd is " + event.query.cmd);
   var child = exec(cmd, {maxBuffer: 1024 * 10000}, function(error, stdout, stderr) {
       funcEndTime = new Date();
       console.log("fetchSegments took: " + (funcEndTime - funcStartTime));
 
       if (error) {
         console.log(error.stack);
-        sentry.captureMessage(error);
+        rollbar.reportMessage("Error fetching segments...");
 
         context.done("Error fetching segments");
       } 
@@ -107,7 +109,7 @@ function concatSegments(segment_urls, event, context) {
         console.log("concat took: " + (funcEndTime - funcStartTime));
         if (error) {
           console.log(error.stack);
-          sentry.captureMessage(error);
+          rollbar.reportMessage("Error doing Concat...");
 
           context.done("Concat Error");
         } 
@@ -174,7 +176,7 @@ exports.handler = (event, context, callback) => {
     return concatSegments(segmentUrls, event, context);
   }).catch(function(error) {
     console.log(error.stack);
-    sentry.captureMessage(error);
+    rollbar.reportMessage("Error final catch...");
 
     return context.done("Error");
   });
