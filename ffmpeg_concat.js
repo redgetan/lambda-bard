@@ -12,9 +12,6 @@ var rollbar = require("rollbar");
 rollbar.init("608fbaf6aa554c6aa6044b0d20efe646");
 rollbar.handleUncaughtExceptionsAndRejections("608fbaf6aa554c6aa6044b0d20efe646", {});
 
-rollbar.reportMessage("Hello world!");
-
-
 AWS.config.region = 'us-west-2';
 
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
@@ -84,7 +81,7 @@ function concatSegments(segment_urls, event, context) {
 
   funcStartTime = new Date();
 
-  console.log("cmd is " + event.query.cmd);
+  console.log("cmd is " + event.queryParams.cmd);
   var child = exec(cmd, {maxBuffer: 1024 * 10000}, function(error, stdout, stderr) {
       funcEndTime = new Date();
       console.log("fetchSegments took: " + (funcEndTime - funcStartTime));
