@@ -89,7 +89,7 @@ function concatSegments(segment_urls, event, context) {
 
       if (error) {
         console.log(error.stack);
-        sentry.captureException(error);
+        sentry.captureMessage(error);
 
         context.done("Error fetching segments");
       } 
@@ -107,9 +107,9 @@ function concatSegments(segment_urls, event, context) {
         console.log("concat took: " + (funcEndTime - funcStartTime));
         if (error) {
           console.log(error.stack);
-          sentry.captureException(error);
+          sentry.captureMessage(error);
 
-          context.done("Concat Error.");
+          context.done("Concat Error");
         } 
 
         funcStartTime = new Date();
@@ -174,7 +174,7 @@ exports.handler = (event, context, callback) => {
     return concatSegments(segmentUrls, event, context);
   }).catch(function(error) {
     console.log(error.stack);
-    sentry.captureException(error);
+    sentry.captureMessage(error);
 
     return context.done("Error");
   });
