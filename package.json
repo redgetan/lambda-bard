@@ -5,6 +5,7 @@
   "dependencies": {
     "aws-sdk": "2.3.14",
     "mysql": "2.10.2",
+    "raven": "^0.12.1",
     "sequelize": "3.20.0"
   }
 }

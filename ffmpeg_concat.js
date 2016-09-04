@@ -2,16 +2,21 @@
 var exec = require('child_process').exec;
 var fs = require('fs');
 var AWS = require('aws-sdk');
+var raven = require('raven');
 var models = require('./models/index');
 var util = require('./utils/helpers');
 var uuid = require('node-uuid');
 var funcStartTime;
 var funcEndTime;
 
+var sentry = new raven.Client('https://eeeab140f7794810a29e5b139871bc8d:65a80e26bacd4af6a56fdec3408fe21e@sentry.io/96679');
+sentry.patchGlobal();
+
 
 AWS.config.region = 'us-west-2';
 
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
+
 
 // echo $URL_LIST | xargs -n 1 -P 8
 // "curl -o /tmp/lol.mp4 -s url"
@@ -84,6 +89,8 @@ function concatSegments(segment_urls, event, context) {
 
       if (error) {
         console.log(error.stack);
+        sentry.captureException(error);
+
         context.done("Error fetching segments");
       } 
 
@@ -100,6 +107,8 @@ function concatSegments(segment_urls, event, context) {
         console.log("concat took: " + (funcEndTime - funcStartTime));
         if (error) {
           console.log(error.stack);
+          sentry.captureException(error);
+
           context.done("Concat Error");
         } 
 
@@ -165,6 +174,8 @@ exports.handler = (event, context, callback) => {
     return concatSegments(segmentUrls, event, context);
   }).catch(function(error) {
     console.log(error.stack);
+    sentry.captureException(error);
+    
     return context.done("Error");
   });
 
