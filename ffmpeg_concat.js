@@ -8,18 +8,33 @@ var uuid = require('node-uuid');
 var funcStartTime;
 var funcEndTime;
 
-var rollbar = require("rollbar");
-rollbar.init("608fbaf6aa554c6aa6044b0d20efe646");
-rollbar.handleUncaughtExceptionsAndRejections("608fbaf6aa554c6aa6044b0d20efe646", {});
+var raven = require('raven');
+var client = new raven.Client('https://eeeab140f7794810a29e5b139871bc8d:65a80e26bacd4af6a56fdec3408fe21e@sentry.io/96679');
+client.patchGlobal();
 
 AWS.config.region = 'us-west-2';
 
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
 
+/********* CUSTOM ERRORS **********/
+
+function FetchError(message) {
+  this.name = "FetchError";
+  this.message = (message || "");
+}
+FetchError.prototype = Error.prototype;
+
+function ConcatError(message) {
+  this.name = "ConcatError";
+  this.message = (message || "");
+}
+ConcatError.prototype = Error.prototype;
+
+
+/********* HELPERS ********/
 
 // echo $URL_LIST | xargs -n 1 -P 8
 // "curl -o /tmp/lol.mp4 -s url"
-
 function buildVideoConcatCommand(segment_urls, outputFile) {
   var binary = process.env['FFMPEG_PATH'] || "./bin/ffmpeg"
   var inputs = segment_urls.map(function(segment_url){ return " -i " + segment_url;  }).join(" ");
@@ -88,9 +103,9 @@ function concatSegments(segment_urls, event, context) {
 
       if (error) {
         console.log(error.stack);
-        rollbar.reportMessage("Error fetching segments...");
-
-        context.done("Error fetching segments");
+        client.captureException(error, function(result) {
+          context.done("Error fetching segments");
+        });
       } 
 
       if (concatCmd === "") {
@@ -106,9 +121,9 @@ function concatSegments(segment_urls, event, context) {
         console.log("concat took: " + (funcEndTime - funcStartTime));
         if (error) {
           console.log(error.stack);
-          rollbar.reportMessage("Error doing Concat...");
-
-          context.done("Concat Error");
+          client.captureException(error, function(result) {
+            context.done("Concat Error");
+          });
         } 
 
         funcStartTime = new Date();
@@ -135,8 +150,7 @@ function concatSegments(segment_urls, event, context) {
 }
 
 
-
-exports.handler = (event, context, callback) => {
+exports.handler = function(event, context, callback) {
   // callback = callback || context.done; // lambda local uses the 0.10 nodejs api where it uses context.done instead of callback to return result to user
 
   var character_token = event.queryParams.character_token;
@@ -173,9 +187,9 @@ exports.handler = (event, context, callback) => {
     return concatSegments(segmentUrls, event, context);
   }).catch(function(error) {
     console.log(error.stack);
-    rollbar.reportMessage("Error final catch...");
-
-    return context.done("Error");
+    client.captureException(error, function(result) {
+      return context.done("Error");
+    });
   });
 
 };
