@@ -103,7 +103,7 @@ function concatSegments(segment_urls, event, context) {
 
       if (error) {
         console.log(error.stack);
-        client.captureException(error, function(result) {
+        client.captureException(new FetchError(), function(result) {
           context.done("Error fetching segments");
         });
       } 
@@ -121,7 +121,7 @@ function concatSegments(segment_urls, event, context) {
         console.log("concat took: " + (funcEndTime - funcStartTime));
         if (error) {
           console.log(error.stack);
-          client.captureException(error, function(result) {
+          client.captureException(new ConcatError(), function(result) {
             context.done("Concat Error");
           });
         } 
@@ -187,7 +187,7 @@ exports.handler = function(event, context, callback) {
     return concatSegments(segmentUrls, event, context);
   }).catch(function(error) {
     console.log(error.stack);
-    client.captureException(error, function(result) {
+    client.captureException(new Error("failed to concat"), function(result) {
       return context.done("Error");
     });
   });
