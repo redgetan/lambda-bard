@@ -13,11 +13,7 @@ mkdir -p ./bin/darwin_64
 mkdir -p ./bin/linux_64
 
 wget https://s3-us-west-2.amazonaws.com/roplabs-mad/binaries/darwin_64/ffmpeg -O ./bin/darwin_64/ffmpeg && chmod +x ./bin/darwin_64/ffmpeg
-wget https://s3-us-west-2.amazonaws.com/roplabs-mad/binaries/darwin_64/youtube-dl -O ./bin/darwin_64/youtube-dl && chmod +x ./bin/darwin_64/youtube-dl
-
 wget https://s3-us-west-2.amazonaws.com/roplabs-mad/binaries/linux_64/ffmpeg -O ./bin/linux_64/ffmpeg && chmod +x ./bin/linux_64/ffmpeg
-wget https://s3-us-west-2.amazonaws.com/roplabs-mad/binaries/linux_64/youtube-dl -O ./bin/linux_64/youtube-dl && chmod +x ./bin/linux_64/youtube-dl
-
 
 echo "==== BINARIES now installed in ./bin directory"
 
