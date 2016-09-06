@@ -1,5 +1,5 @@
 'use strict';
-var util = require('./../utils/helpers');
+var util = require('./../lib/helpers');
 
 module.exports = function(sequelize, DataTypes) {
 
