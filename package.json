@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "aws-sdk": "2.3.14",
+    "aws-sdk": "^2.3.14",
+    "lambda-local": "0.0.9",
     "mysql": "2.10.2",
+    "raven": "^0.12.1",
     "rollbar": "^0.6.2",
     "sequelize": "3.20.0"
   }
