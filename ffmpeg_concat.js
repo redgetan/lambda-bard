@@ -6,9 +6,9 @@ exports.handler = function(event, context, callback) {
   var videoMerger = new VideoMerger(event.queryParams);
 
   videoMerger.concatSegments().then(function(result){
-    context.done(result);
+    context.done(null, result);
   }).catch(function(error) {
-    context.done(null, error.message);
+    context.done(error.message);
   });
 
 };
