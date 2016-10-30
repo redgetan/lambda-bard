@@ -39,13 +39,22 @@ module.exports = function(sequelize, DataTypes) {
       urlsFromWordTags: function(text, scene_token) { 
         var wordTags = text.trim().split(/\s+/);
 
-        var urls = wordTags.map(function(wordTagString){
+        var urlPromises = wordTags.map(function(wordTagString){
           var wordTagComponents = wordTagString.split(":");
           var wordTagToken      = wordTagComponents[1];
-          return Segment.cdnPath() + "segments/" + scene_token + "/" + wordTagToken + ".mp4";
+          if (typeof scene_token === "undefined") {
+            return Segment.findOne({
+              where: ["token = ?", wordTagToken]  
+            }).then(function(segment){
+              return segment.sourceUrl();
+            });
+          } else {
+            var segmentUrl = Segment.cdnPath() + "segments/" + scene_token + "/" + wordTagToken + ".mp4"
+            return Promise.resolve(segmentUrl);
+          }
         });
 
-        return urls;
+        return urlPromises;
       }
     }, instanceMethods: {
       sourceUrl: function() {
