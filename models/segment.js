@@ -1,5 +1,8 @@
 'use strict';
 var util = require('./../lib/helpers');
+var env       = process.env.NODE_ENV || 'production';
+var segmentsCdnPath = require(__dirname + '/../config/general.json')["segmentsCdnPath"][env];
+
 
 module.exports = function(sequelize, DataTypes) {
 
@@ -22,7 +25,7 @@ module.exports = function(sequelize, DataTypes) {
     underscored: true,
     classMethods: {
       cdnPath: function() {
-        return "https://d22z4oll34c07f.cloudfront.net/";
+        return segmentsCdnPath.url;
       },
       associate: function(models) {
         Segment.belongsTo(models.Video);

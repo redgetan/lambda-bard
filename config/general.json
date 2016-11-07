@@ -1,0 +1,27 @@
+{
+  "userS3Bucket": {
+    "development": {
+      "name": "roplabs-bard-users-staging"
+    },
+    "production": {
+      "name": "roplabs-bard-users"
+    }
+  },
+  "userRepoCdnPath": {
+    "development": {
+      "url": "https://s3-us-west-2.amazonaws.com/roplabs-bard-users-staging/"
+    },
+    "production": {
+      "url": "https://videos.bard.co/"
+    }
+  },
+  "segmentsCdnPath": {
+    "development": {
+      "url": "https://s3-us-west-2.amazonaws.com/roplabs-mad-staging/"
+    },
+    "production": {
+      "url": "https://segments.bard.co/"
+    }
+  }
+}
+

@@ -9,6 +9,11 @@ var server = http.createServer(function(req, res) {
   var videoMerger = new VideoMerger(params);
 
   videoMerger.concatSegments().then(function(result){
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Content-Type', 'text/plain');
+
     res.writeHead(200);
     res.end(result);
   }).catch(function(error) {
