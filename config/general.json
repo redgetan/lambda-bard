@@ -3,12 +3,18 @@
     "development": {
       "name": "roplabs-bard-users-staging"
     },
+    "staging": {
+      "name": "roplabs-bard-users-staging"
+    },
     "production": {
       "name": "roplabs-bard-users"
     }
   },
   "userRepoCdnPath": {
     "development": {
+      "url": "https://s3-us-west-2.amazonaws.com/roplabs-bard-users-staging/"
+    },
+    "staging": {
       "url": "https://s3-us-west-2.amazonaws.com/roplabs-bard-users-staging/"
     },
     "production": {
@@ -18,6 +24,9 @@
   "segmentsCdnPath": {
     "development": {
       "url": "https://s3-us-west-2.amazonaws.com/roplabs-mad-staging/"
+    },
+    "staging": {
+      "url": "https://segments.bard.co/"
     },
     "production": {
       "url": "https://segments.bard.co/"
