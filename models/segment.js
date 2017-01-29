@@ -14,6 +14,7 @@ module.exports = function(sequelize, DataTypes) {
     video_id: DataTypes.INTEGER,
     word: DataTypes.STRING,
     relative_path: DataTypes.STRING,
+    local_relative_path: DataTypes.STRING,
     token: DataTypes.STRING,
     start: DataTypes.DECIMAL,
     stop: DataTypes.DECIMAL,
