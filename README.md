@@ -5,7 +5,7 @@
 1. Install [lambda-local](https://www.npmjs.com/package/lambda-local)
 2. Install ffmpeg (run ./install.sh)
 3. Install jq, awscli
-3. FFMPEG_PATH=$(which ffmpeg) lambda-local -l ffmpeg_concat.js -h handler -e events/basic.js -t 20
+3. FFMPEG_PATH=$(which ffmpeg) lambda-local -l ffmpeg_concat.js -h handler -e test/events/basic.js -t 20
 
 ## Production
 
