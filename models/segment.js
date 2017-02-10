@@ -7,7 +7,7 @@ var segmentsCdnPath = require(__dirname + '/../config/general.json')["segmentsCd
 module.exports = function(sequelize, DataTypes) {
 
   var MAX_DURATION = 3;
-  var MIN_DURATION = 0.15;
+  var MIN_DURATION = 0.10;
   var MIN_CONFIDENCE = 0.0;
 
   var Segment = sequelize.define('Segment', {
