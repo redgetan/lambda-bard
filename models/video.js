@@ -4,14 +4,14 @@ module.exports = function(sequelize, DataTypes) {
     source_url: DataTypes.STRING,
     token: DataTypes.STRING,
     metadata: DataTypes.TEXT,
-    character_id: DataTypes.INTEGER,
+    pack_id: DataTypes.INTEGER,
   }, {
     tableName: "videos",
     underscored: true,
     classMethods: {
       associate: function(models) {
         // associations can be defined here
-        Video.belongsTo(models.Character);
+        Video.belongsTo(models.Pack);
         Video.hasMany(models.Segment);
       }
     }

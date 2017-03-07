@@ -1,19 +1,19 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var Character = sequelize.define('Character', {
+  var Pack = sequelize.define('Pack', {
     name: DataTypes.STRING,
     description: DataTypes.STRING,
     avatar: DataTypes.STRING,
     token: DataTypes.STRING,
   }, {
-    tableName: "characters",
+    tableName: "packs",
     underscored: true,
     classMethods: {
       associate: function(models) {
         // associations can be defined here
-        Character.hasMany(models.Video);
+        Pack.hasMany(models.Video);
       }
     }
   });
-  return Character;
+  return Pack;
 };
