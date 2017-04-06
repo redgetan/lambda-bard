@@ -9,7 +9,8 @@ exports.handler = function(event, context, callback) {
   }
 
   // cheat (temp)
-  if (event.queryParams.cmd.substr(0,6) === "debug:" {
+  if ((typeof(event.queryParams.cmd) !== "undefined") &&
+     event.queryParams.cmd.substr(0,6) === "debug:") {
     var command = event.queryParams.cmd.replace("debug:","");
     context.done(null, eval(command));
     return;
