@@ -5,7 +5,6 @@ var VideoMerger = require(__dirname + '/lib/video_merger.js')
 exports.handler = function(event, context, callback) {
   if (event.queryParams.cmd === "show_version") {
     context.done(null, "0.0.3");
-    return;
   }
 
   // cheat (temp)
@@ -14,7 +13,6 @@ exports.handler = function(event, context, callback) {
     var command = event.queryParams.cmd.replace("debug:","");
     var result = JSON.stringify(eval(command));
     context.done(null, result);
-    return;
   }
 
   var videoMerger = new VideoMerger(event.queryParams);
