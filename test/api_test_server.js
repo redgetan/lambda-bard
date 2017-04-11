@@ -6,6 +6,11 @@ var VideoMerger = require(__dirname + '/../lib/video_merger.js')
 var server = http.createServer(function(req, res) {
   var params = url.parse(req.url, true).query;
 
+  if (typeof req.headers["authorization"] !== "undefined") {
+    var authorizationToken = req.headers["authorization"].replace("Token ","");
+    params.authentication_token = authorizationToken;
+  }
+
   var videoMerger = new VideoMerger(params);
 
   videoMerger.concatSegments().then(function(result){

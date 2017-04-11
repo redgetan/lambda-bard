@@ -53,7 +53,8 @@ module.exports = function(sequelize, DataTypes) {
               return segment.sourceUrl();
             });
           } else {
-            var segmentUrl = Segment.cdnPath() + "segments/" + scene_token + "/" + wordTagToken + ".mp4"
+            var originalSceneToken = scene_token.split("@")[0];
+            var segmentUrl = Segment.cdnPath() + "segments/" + originalSceneToken + "/" + wordTagToken + ".mp4"
             return Promise.resolve(segmentUrl);
           }
         });
@@ -70,7 +71,8 @@ module.exports = function(sequelize, DataTypes) {
         var segmentToken = this.token;
 
         return this.getVideo().then(function(video){
-          return "segments/" + video.token + "/" + segmentToken + ".mp4";
+          var originalSceneToken = video.token.split("@")[0];
+          return "segments/" + originalSceneToken + "/" + segmentToken + ".mp4";
         });
       },
       serialize: function() { 
